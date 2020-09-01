@@ -10,6 +10,7 @@ const endpoint =
 const input = document.querySelector('.search');
 let cities = [];
 let city = {};
+let search = [];
 
 let userSearch = '';
 
@@ -28,11 +29,38 @@ fetch(endpoint)
     }
   });
 
+//function that adds commas to the population value
+function addCommas(value) {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
 function findCity() {
-  userSearch = input.value;
-  return cities.filter((city) => {
-    return city.name.match(userSearch) || city.state.match(userSearch);
+  let search = [];
+  userSearch = input.value.toLowerCase();
+  cities.filter((city) => {
+    if (
+      city.name.toLowerCase().includes(userSearch) ||
+      city.state.toLowerCase().includes(userSearch)
+    ) {
+      search.push(city);
+    }
   });
+  renderSearch(search, '.suggestions');
+}
+
+function renderSearch(arr, selector) {
+  let codeHTML = '';
+
+  for (let item of arr) {
+    codeHTML += ` <li>
+      <span class="name">
+        ${item.name}, ${item.state}
+      </span>
+      <span class="population">${addCommas(item.population)}</span>
+    </li>`;
+  }
+  const element = document.querySelector(selector);
+  element.innerHTML = codeHTML;
 }
 
 //Events
