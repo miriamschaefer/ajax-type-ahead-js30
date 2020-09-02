@@ -10,14 +10,10 @@ const endpoint =
 const input = document.querySelector('.search');
 let cities = [];
 let city = {};
-let search = [];
-
 let userSearch = '';
 
 fetch(endpoint)
   .then((response) => response.json())
-  // .then((data) => cities.push(...data));
-
   .then((data) => {
     for (let item of data) {
       city = {
@@ -51,14 +47,22 @@ function findCity() {
 function renderSearch(arr, selector) {
   let codeHTML = '';
 
-  for (let item of arr) {
-    codeHTML += ` <li>
-      <span class="name">
-        ${item.name}, ${item.state}
-      </span>
-      <span class="population">${addCommas(item.population)}</span>
-    </li>`;
-  }
+  arr.map((item) => {
+    const nameSearch = item.name
+      .toLowerCase()
+      .split(userSearch)
+      .join(`<span class="hl">${userSearch}</span>`);
+
+    const stateSearch = item.state
+      .toLowerCase()
+      .split(userSearch)
+      .join(`<span class="hl">${userSearch}</span>`);
+
+    return (codeHTML += `<li><span>${nameSearch}, ${stateSearch}</span><span class="population">${addCommas(
+      item.population
+    )}</span></li>`);
+  });
+
   const element = document.querySelector(selector);
   element.innerHTML = codeHTML;
 }
